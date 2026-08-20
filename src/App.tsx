@@ -1,122 +1,96 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import React from 'react';
+import { useRepoStore } from './stores/repoStore';
+import HomePage from './pages/HomePage';
+import RepositoryPage from './pages/RepositoryPage';
+import SettingsPage from './pages/SettingsPage';
+import { Settings, Layout, Home, Network } from 'lucide-react';
+
+const GithubIcon: React.FC<React.SVGProps<SVGSVGElement> & { size?: number }> = ({ size = 24, ...props }) => (
+  <svg viewBox="0 0 24 24" width={size} height={size} stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
+  </svg>
+);
 
 function App() {
-  const [count, setCount] = useState(0)
+  const { activeTab, setActiveTab, metadata, resetRepo } = useRepoStore();
+
+  // If on the home landing page, render HomePage directly without header wrapper
+  if (activeTab === 'home') {
+    return <HomePage />;
+  }
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
+    <div className="flex h-screen w-screen flex-col overflow-hidden bg-slate-950 text-slate-100 font-sans">
+      {/* Universal Workspace Header */}
+      <header className="flex h-14 items-center justify-between border-b border-slate-800 bg-slate-950 px-6 shrink-0 z-30 select-none">
+        {/* Logo and Brand */}
+        <div
+          onClick={resetRepo}
+          className="flex items-center gap-2 cursor-pointer group"
         >
-          Count is {count}
-        </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
+          <div className="p-1.5 bg-gradient-to-tr from-teal-500 to-indigo-500 rounded-lg text-white group-hover:scale-105 transition">
+            <Network size={16} />
+          </div>
+          <span className="text-md font-bold bg-gradient-to-r from-teal-400 to-indigo-400 bg-clip-text text-transparent glow-text-teal">
+            CodeGraph
+          </span>
         </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+        {/* Tab switcher links */}
+        <nav className="flex items-center gap-1.5">
+          <button
+            onClick={() => setActiveTab('home')}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-slate-200 transition"
+          >
+            <Home size={14} />
+            <span>Home</span>
+          </button>
+
+          {metadata && (
+            <button
+              onClick={() => setActiveTab('repository')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition ${activeTab === 'repository'
+                  ? 'bg-slate-900 text-teal-400 border border-slate-800'
+                  : 'text-slate-400 hover:text-slate-200'
+                }`}
+            >
+              <Layout size={14} />
+              <span>Workspace</span>
+            </button>
+          )}
+
+          <button
+            onClick={() => setActiveTab('settings')}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition ${activeTab === 'settings'
+                ? 'bg-slate-900 text-teal-400 border border-slate-800'
+                : 'text-slate-400 hover:text-slate-200'
+              }`}
+          >
+            <Settings size={14} />
+            <span>Settings</span>
+          </button>
+        </nav>
+
+        {/* Quick Social links */}
+        <div className="flex items-center gap-4 text-slate-400">
+          <a
+            href="https://github.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-white transition"
+          >
+            <GithubIcon size={18} />
+          </a>
+        </div>
+      </header>
+
+      {/* Main Page Workspace View */}
+      <main className="flex-1 min-h-0 relative">
+        {activeTab === 'repository' && <RepositoryPage />}
+        {activeTab === 'settings' && <SettingsPage />}
+      </main>
+    </div>
+  );
 }
 
-export default App
+export default App;
