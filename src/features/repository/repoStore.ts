@@ -1,12 +1,12 @@
 import { create } from 'zustand';
-import type { RepoFile, RepositoryMetadata, LoaderState } from '../features/repository/repositoryTypes';
-import type { GraphData } from '../features/graph/graphTypes';
-import { loadGithubRepository } from '../features/repository/githubLoader';
-import { loadLocalFileList, loadLocalDirectory, loadZipFile } from '../features/repository/localLoader';
-import { parseCode } from '../features/parser/babelParser';
-import { resolveFileImports } from '../features/parser/importExtractor';
-import { buildDependencyGraph } from '../features/graph/graphBuilder';
-import { detectCycles } from '../features/graph/graphUtils';
+import type { RepoFile, RepositoryMetadata, LoaderState } from './repositoryTypes';
+import type { GraphData } from '../graph/graphTypes';
+import { loadGithubRepository } from './loaders/githubLoader';
+import { loadLocalFileList, loadLocalDirectory, loadZipFile } from './loaders/localLoader';
+import { parseCode } from '../analysis/parser/babelParser';
+import { resolveFileImports } from '../analysis/parser/importExtractor';
+import { buildDependencyGraph } from '../graph/builders/graphBuilder';
+import { detectCycles } from '../graph/graphUtils';
 
 // Define the hardcoded Sample Repository
 const SAMPLE_FILES: RepoFile[] = [
@@ -233,7 +233,7 @@ interface RepoStoreState {
   searchQuery: string;
   githubToken: string;
   activeTab: 'home' | 'repository' | 'settings';
-  
+
   // Actions
   setGithubToken: (token: string) => void;
   setSearchQuery: (query: string) => void;
@@ -242,7 +242,7 @@ interface RepoStoreState {
   setActiveTab: (tab: 'home' | 'repository' | 'settings') => void;
   setFilters: (filters: Partial<FilterOptions>) => void;
   resetRepo: () => void;
-  
+
   filters: FilterOptions;
 
   // Processing triggers
@@ -269,7 +269,7 @@ export const useRepoStore = create<RepoStoreState>((set, get) => ({
   searchQuery: '',
   githubToken: localStorage.getItem('codegraph_github_token') || '',
   activeTab: 'home',
-  
+
   filters: {
     excludeTestFiles: true,
     showDirectories: false,
@@ -283,11 +283,11 @@ export const useRepoStore = create<RepoStoreState>((set, get) => ({
   },
 
   setSearchQuery: (query) => set({ searchQuery: query }),
-  
+
   setSelectedNodeId: (id) => set({ selectedNodeId: id }),
-  
+
   setHoveredNodeId: (id) => set({ hoveredNodeId: id }),
-  
+
   setActiveTab: (tab) => set({ activeTab: tab }),
 
   setFilters: (updatedFilters) => {
@@ -296,12 +296,12 @@ export const useRepoStore = create<RepoStoreState>((set, get) => ({
       // Re-trigger graph building when filters change
       let newGraph = state.graphData;
       let newCycles = state.cycles;
-      
+
       if (state.files.length > 0) {
         newGraph = buildDependencyGraph(state.files, newFilters);
         newCycles = detectCycles(newGraph);
       }
-      
+
       return {
         filters: newFilters,
         graphData: newGraph,
@@ -338,7 +338,7 @@ export const useRepoStore = create<RepoStoreState>((set, get) => ({
     for (let i = 0; i < rawFiles.length; i++) {
       const file = rawFiles[i];
       const parseResult = parseCode(file.content, file.path);
-      
+
       parsedFiles.push({
         ...file,
         imports: parseResult.imports,
@@ -466,7 +466,7 @@ export const useRepoStore = create<RepoStoreState>((set, get) => ({
       fileCount: SAMPLE_FILES.length,
       totalSize: SAMPLE_FILES.reduce((acc, f) => acc + f.size, 0),
     };
-    
+
     // Copy sample files to avoid modifying template source
     const rawFiles = SAMPLE_FILES.map(f => ({ ...f }));
     get().processRepositoryFiles(rawFiles, metadata);

@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { useRepoStore } from '../stores/repoStore';
+import { useRepoStore } from '../features/repository/repoStore';
 import { FolderOpen, FileArchive, Play, Loader2, Key } from 'lucide-react';
 
 const GithubIcon: React.FC<React.SVGProps<SVGSVGElement> & { size?: number }> = ({ size = 24, ...props }) => (
@@ -203,7 +203,7 @@ export const HomePage: React.FC = () => {
             <Loader2 className="mx-auto text-teal-400 animate-spin" size={40} />
             <h3 className="mt-6 text-lg font-bold text-slate-200">Analyzing Repository</h3>
             <p className="mt-2 text-sm text-slate-400 font-medium">{loaderState.message}</p>
-            
+
             {/* Loading progress bar */}
             <div className="mt-6 w-full h-1.5 bg-slate-950 rounded-full overflow-hidden">
               <div

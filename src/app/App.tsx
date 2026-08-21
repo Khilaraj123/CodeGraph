@@ -1,8 +1,8 @@
 import React from 'react';
-import { useRepoStore } from './stores/repoStore';
-import HomePage from './pages/HomePage';
-import RepositoryPage from './pages/RepositoryPage';
-import SettingsPage from './pages/SettingsPage';
+import { useRepoStore } from '../features/repository/repoStore';
+import HomePage from '../pages/HomePage';
+import RepositoryPage from '../pages/RepositoryPage';
+import SettingsPage from '../pages/SettingsPage';
 import { Settings, Layout, Home, Network } from 'lucide-react';
 
 const GithubIcon: React.FC<React.SVGProps<SVGSVGElement> & { size?: number }> = ({ size = 24, ...props }) => (
@@ -50,8 +50,8 @@ function App() {
             <button
               onClick={() => setActiveTab('repository')}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition ${activeTab === 'repository'
-                  ? 'bg-slate-900 text-teal-400 border border-slate-800'
-                  : 'text-slate-400 hover:text-slate-200'
+                ? 'bg-slate-900 text-teal-400 border border-slate-800'
+                : 'text-slate-400 hover:text-slate-200'
                 }`}
             >
               <Layout size={14} />
@@ -62,8 +62,8 @@ function App() {
           <button
             onClick={() => setActiveTab('settings')}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition ${activeTab === 'settings'
-                ? 'bg-slate-900 text-teal-400 border border-slate-800'
-                : 'text-slate-400 hover:text-slate-200'
+              ? 'bg-slate-900 text-teal-400 border border-slate-800'
+              : 'text-slate-400 hover:text-slate-200'
               }`}
           >
             <Settings size={14} />

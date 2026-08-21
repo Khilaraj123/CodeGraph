@@ -1,5 +1,5 @@
 import React from 'react';
-import { useRepoStore } from '../stores/repoStore';
+import { useRepoStore } from '../features/repository/repoStore';
 import { Settings, Sliders, Layout, Info, RefreshCw } from 'lucide-react';
 
 const GithubIcon: React.FC<React.SVGProps<SVGSVGElement> & { size?: number }> = ({ size = 24, ...props }) => (
@@ -34,7 +34,7 @@ export const SettingsPage: React.FC = () => {
             <Layout size={18} className="text-teal-400" />
             <span>Visualization Layout</span>
           </div>
-          
+
           <div className="flex flex-col gap-1.5">
             <label className="text-xs text-slate-400 font-medium">Layout Style</label>
             <select
@@ -47,8 +47,8 @@ export const SettingsPage: React.FC = () => {
               <option value="grid">Rectangular Grid Coordinates</option>
             </select>
             <p className="text-xxs text-slate-500 leading-relaxed mt-1">
-              - <b>Force-Directed:</b> Uses spring physics forces (best for understanding relations).<br/>
-              - <b>Concentric Radial:</b> Arranges nodes in outer rings based on directory containment.<br/>
+              - <b>Force-Directed:</b> Uses spring physics forces (best for understanding relations).<br />
+              - <b>Concentric Radial:</b> Arranges nodes in outer rings based on directory containment.<br />
               - <b>Grid:</b> Places all nodes statically in rows and columns.
             </p>
           </div>

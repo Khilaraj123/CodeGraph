@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useRepoStore } from '../stores/repoStore';
+import { useRepoStore } from '../features/repository/repoStore';
 import { renderD3Graph } from '../features/visualization/d3Renderer';
 import { MermaidRenderer } from '../features/visualization/mermaidRenderer';
 import { exportToSvg, exportToPng, exportToJson } from '../features/visualization/export';
@@ -69,7 +69,7 @@ export const RepositoryPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'d3' | 'mermaid'>('d3');
   const [fileSearch, setFileSearch] = useState('');
   const [collapsedDirs, setCollapsedDirs] = useState<Set<string>>(new Set());
-  
+
   const d3ContainerRef = useRef<HTMLDivElement>(null);
   const filePaths = files.map((f) => f.path);
   const fileMap = new Map(files.map((f) => [f.path, f]));
@@ -78,10 +78,10 @@ export const RepositoryPage: React.FC = () => {
   // Initialize and update D3 Graph layout
   useEffect(() => {
     if (activeTab !== 'd3' || !d3ContainerRef.current) return;
-    
+
     // Clear old drawings
     d3ContainerRef.current.innerHTML = '';
-    
+
     // Trigger render
     renderD3Graph(
       d3ContainerRef.current,
@@ -156,9 +156,8 @@ export const RepositoryPage: React.FC = () => {
           <div
             key={child.path}
             onClick={() => setSelectedNodeId(isSelected ? null : nodeId)}
-            className={`flex items-center gap-2 py-1 px-2 rounded text-xs cursor-pointer transition truncate ${
-              isSelected ? 'bg-indigo-600/30 text-white font-bold' : 'hover:bg-slate-800 text-slate-400'
-            }`}
+            className={`flex items-center gap-2 py-1 px-2 rounded text-xs cursor-pointer transition truncate ${isSelected ? 'bg-indigo-600/30 text-white font-bold' : 'hover:bg-slate-800 text-slate-400'
+              }`}
             style={{ paddingLeft: `${depth * 12 + 20}px` }}
           >
             <File size={13} className={isSelected ? 'text-teal-400' : 'text-slate-500'} />
@@ -233,17 +232,15 @@ export const RepositoryPage: React.FC = () => {
           <div className="flex bg-slate-900 p-0.5 rounded-lg border border-slate-800">
             <button
               onClick={() => setActiveTab('d3')}
-              className={`px-3 py-1 text-xs font-medium rounded-md transition ${
-                activeTab === 'd3' ? 'bg-indigo-600 text-white shadow' : 'text-slate-400 hover:text-white'
-              }`}
+              className={`px-3 py-1 text-xs font-medium rounded-md transition ${activeTab === 'd3' ? 'bg-indigo-600 text-white shadow' : 'text-slate-400 hover:text-white'
+                }`}
             >
               Interactive Graph
             </button>
             <button
               onClick={() => setActiveTab('mermaid')}
-              className={`px-3 py-1 text-xs font-medium rounded-md transition ${
-                activeTab === 'mermaid' ? 'bg-indigo-600 text-white shadow' : 'text-slate-400 hover:text-white'
-              }`}
+              className={`px-3 py-1 text-xs font-medium rounded-md transition ${activeTab === 'mermaid' ? 'bg-indigo-600 text-white shadow' : 'text-slate-400 hover:text-white'
+                }`}
             >
               Flowchart
             </button>
@@ -290,25 +287,22 @@ export const RepositoryPage: React.FC = () => {
               <div className="absolute bottom-4 left-6 z-25 flex items-center gap-1.5 p-1 bg-slate-900/80 border border-slate-800 rounded-lg backdrop-blur">
                 <button
                   onClick={() => setFilters({ graphLayout: 'force' })}
-                  className={`px-2 py-1 text-xxs font-medium rounded-md transition ${
-                    filters.graphLayout === 'force' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white'
-                  }`}
+                  className={`px-2 py-1 text-xxs font-medium rounded-md transition ${filters.graphLayout === 'force' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white'
+                    }`}
                 >
                   Force Layout
                 </button>
                 <button
                   onClick={() => setFilters({ graphLayout: 'radial' })}
-                  className={`px-2 py-1 text-xxs font-medium rounded-md transition ${
-                    filters.graphLayout === 'radial' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white'
-                  }`}
+                  className={`px-2 py-1 text-xxs font-medium rounded-md transition ${filters.graphLayout === 'radial' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white'
+                    }`}
                 >
                   Radial Layout
                 </button>
                 <button
                   onClick={() => setFilters({ graphLayout: 'grid' })}
-                  className={`px-2 py-1 text-xxs font-medium rounded-md transition ${
-                    filters.graphLayout === 'grid' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white'
-                  }`}
+                  className={`px-2 py-1 text-xxs font-medium rounded-md transition ${filters.graphLayout === 'grid' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white'
+                    }`}
                 >
                   Grid Layout
                 </button>
@@ -362,29 +356,29 @@ export const RepositoryPage: React.FC = () => {
               {/* Internal Structures (Classes & Functions) */}
               {((activeFile.classes && activeFile.classes.length > 0) ||
                 (activeFile.functions && activeFile.functions.length > 0)) && (
-                <div className="space-y-2">
-                  <div className="text-xxs font-semibold text-slate-500 uppercase tracking-wider">
-                    Defined Structures
+                  <div className="space-y-2">
+                    <div className="text-xxs font-semibold text-slate-500 uppercase tracking-wider">
+                      Defined Structures
+                    </div>
+                    <div className="max-h-48 overflow-y-auto space-y-1.5 p-2 bg-slate-900/30 rounded border border-slate-850">
+                      {activeFile.classes?.map((c) => (
+                        <div key={c.name} className="text-xs text-indigo-300 font-mono flex items-center gap-1.5">
+                          <span className="text-indigo-400 font-bold shrink-0">class</span>
+                          <span className="truncate">{c.name}</span>
+                          {c.superClass && (
+                            <span className="text-slate-500 text-xxs truncate">extends {c.superClass}</span>
+                          )}
+                        </div>
+                      ))}
+                      {activeFile.functions?.map((f) => (
+                        <div key={f.name} className="text-xs text-teal-300 font-mono flex items-center gap-1.5">
+                          <span className="text-teal-400 shrink-0 font-bold">fn</span>
+                          <span className="truncate">{f.name}</span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                  <div className="max-h-48 overflow-y-auto space-y-1.5 p-2 bg-slate-900/30 rounded border border-slate-850">
-                    {activeFile.classes?.map((c) => (
-                      <div key={c.name} className="text-xs text-indigo-300 font-mono flex items-center gap-1.5">
-                        <span className="text-indigo-400 font-bold shrink-0">class</span>
-                        <span className="truncate">{c.name}</span>
-                        {c.superClass && (
-                          <span className="text-slate-500 text-xxs truncate">extends {c.superClass}</span>
-                        )}
-                      </div>
-                    ))}
-                    {activeFile.functions?.map((f) => (
-                      <div key={f.name} className="text-xs text-teal-300 font-mono flex items-center gap-1.5">
-                        <span className="text-teal-400 shrink-0 font-bold">fn</span>
-                        <span className="truncate">{f.name}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
+                )}
 
               {/* Imports List */}
               <div className="space-y-2">
@@ -397,9 +391,8 @@ export const RepositoryPage: React.FC = () => {
                       <div
                         key={idx}
                         onClick={() => imp.resolvedPath && selectGraphNode(`file:${imp.resolvedPath}`)}
-                        className={`p-2 rounded border border-slate-850 hover:bg-slate-900/80 transition text-xs font-mono truncate ${
-                          imp.resolvedPath ? 'cursor-pointer border-indigo-950 text-slate-300' : 'text-slate-500'
-                        }`}
+                        className={`p-2 rounded border border-slate-850 hover:bg-slate-900/80 transition text-xs font-mono truncate ${imp.resolvedPath ? 'cursor-pointer border-indigo-950 text-slate-300' : 'text-slate-500'
+                          }`}
                       >
                         <div className="truncate" title={imp.source}>
                           {imp.source}

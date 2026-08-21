@@ -1,5 +1,5 @@
-import type { RepoFile } from '../repository/repositoryTypes';
-import type { GraphData, GraphNode, GraphEdge } from './graphTypes';
+import type { RepoFile } from '../../repository/repositoryTypes';
+import type { GraphData, GraphNode, GraphEdge } from '../graphTypes';
 
 /**
  * Extracts parent directory path

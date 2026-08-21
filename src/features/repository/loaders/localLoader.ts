@@ -1,6 +1,6 @@
 import JSZip from 'jszip';
-import type { RepoFile, RepositoryMetadata } from './repositoryTypes';
-import { isSupportedCodeFile } from './githubLoader';
+import type { RepoFile, RepositoryMetadata } from '../repositoryTypes';
+import { isSupportedCodeFile } from '../loaders/githubLoader';
 
 /**
  * Strips the top-level folder name from a webkitRelativePath to make it root-relative
@@ -22,11 +22,11 @@ export async function loadLocalFileList(
   onProgress?: (progress: number, message: string) => void
 ): Promise<{ files: RepoFile[]; metadata: RepositoryMetadata }> {
   const progress = (p: number, msg: string) => onProgress?.(p, msg);
-  
+
   progress(10, 'Scanning selected files...');
   const files: RepoFile[] = [];
   const fileArray = Array.from(fileList);
-  
+
   const supportedFiles = fileArray.filter((file) => {
     const relativePath = stripTopLevelFolder(file.webkitRelativePath || file.name);
     return isSupportedCodeFile(relativePath);
@@ -40,7 +40,7 @@ export async function loadLocalFileList(
 
   let loadedCount = 0;
   let totalSize = 0;
-  
+
   // Extract project name from the top-level folder of the first file
   const firstPath = fileArray[0]?.webkitRelativePath || '';
   const projectName = firstPath.split('/')[0] || 'local-repo';
@@ -86,7 +86,7 @@ async function traverseDirectoryHandle(
 ): Promise<RepoFile[]> {
   const files: RepoFile[] = [];
 
-  for await (const entry of dirHandle.values()) {
+  for await (const entry of (dirHandle as any).values()) {
     const relativePath = currentPath ? `${currentPath}/${entry.name}` : entry.name;
 
     if (entry.name === 'node_modules' || entry.name === '.git' || entry.name === 'dist') {
@@ -129,7 +129,7 @@ export async function loadLocalDirectory(
 
   progress(10, 'Requesting directory traversal permissions...');
   progress(30, 'Scanning directory contents...');
-  
+
   const files = await traverseDirectoryHandle(dirHandle);
 
   if (files.length === 0) {
@@ -161,10 +161,10 @@ export async function loadZipFile(
 
   progress(10, 'Loading zip archive...');
   const zip = await JSZip.loadAsync(file);
-  
+
   progress(30, 'Scanning zip contents...');
   const zipEntries: { path: string; entry: JSZip.JSZipObject }[] = [];
-  
+
   zip.forEach((relativePath, entry) => {
     // Strip top-level directory if GitHub-style zipball (which usually nests all files in a folder)
     const normalizedPath = stripTopLevelFolder(relativePath);

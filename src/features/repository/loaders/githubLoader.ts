@@ -1,4 +1,4 @@
-import type { RepoFile, RepositoryMetadata } from './repositoryTypes';
+import type { RepoFile, RepositoryMetadata } from '../repositoryTypes';
 
 interface GithubTreeEntry {
   path: string;
@@ -22,7 +22,7 @@ export function parseGithubUrl(urlOrString: string): { owner: string; repo: stri
 
   const owner = parts[0];
   const repo = parts[1].replace(/\.git$/, '');
-  
+
   let branch: string | undefined;
 
   // URL format: owner/repo/tree/branchName
@@ -100,7 +100,7 @@ async function fetchFileContent(
   token?: string
 ): Promise<string> {
   const headers: HeadersInit = {};
-  
+
   if (token) {
     // Fetch from GitHub Blobs API to authenticate and bypass raw content rate limits
     headers['Authorization'] = `token ${token}`;
@@ -122,7 +122,8 @@ async function fetchFileContent(
 export function isSupportedCodeFile(path: string): boolean {
   const ext = path.split('.').pop()?.toLowerCase();
   const supported = ['ts', 'tsx', 'js', 'jsx', 'json', 'css', 'md', 'html'];
-  return !!ext && supported.includes(ext) && !path.includes('node_modules/');
+  const ignoredPattern = /(^|\/)(node_modules|dist|build|\.git|\.next)\//;
+  return !!ext && supported.includes(ext) && !ignoredPattern.test(path);
 }
 
 /**
@@ -162,13 +163,13 @@ export async function loadGithubRepository(
   const batchSize = 5;
   for (let i = 0; i < supportedFiles.length; i += batchSize) {
     const batch = supportedFiles.slice(i, i + batchSize);
-    
+
     await Promise.all(
       batch.map(async (entry) => {
         try {
           const content = await fetchFileContent(owner, repo, branch, entry.path, entry.sha, token);
           const size = entry.size || content.length;
-          
+
           files.push({
             path: entry.path,
             name: entry.path.split('/').pop() || '',
