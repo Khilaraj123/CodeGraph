@@ -19,7 +19,7 @@ export interface RepoDirectory {
   children: (RepoFile | RepoDirectory)[];
 }
 
-import type { ParsedImport, ParsedExport, ParsedClass, ParsedFunction } from '../analysis/parser/parserTypes';
+import type { ParsedImport, ParsedExport, ParsedClass, ParsedFunction } from '../../analysis/parser/parserTypes';
 
 
 export type RepositorySource = 'github' | 'local' | 'zip' | 'sample';

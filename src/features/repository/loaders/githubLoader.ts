@@ -1,4 +1,4 @@
-import type { RepoFile, RepositoryMetadata } from '../repositoryTypes';
+import type { RepoFile, RepositoryMetadata } from '../models/repositoryTypes';
 
 interface GithubTreeEntry {
   path: string;

@@ -1,5 +1,5 @@
 import JSZip from 'jszip';
-import type { RepoFile, RepositoryMetadata } from '../repositoryTypes';
+import type { RepoFile, RepositoryMetadata } from '../models/repositoryTypes';
 import { isSupportedCodeFile } from '../loaders/githubLoader';
 
 /**

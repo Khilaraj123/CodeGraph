@@ -1,4 +1,4 @@
-import type { GraphEdge, GraphData } from './graphTypes';
+import type { GraphEdge, GraphData } from './models/graphTypes';
 
 /**
  * Resolves the source or target ID from a link, supporting both string IDs and resolved D3 node objects.
@@ -16,18 +16,18 @@ export function getEdgeTargetId(edge: GraphEdge): string {
  */
 export function getNeighbors(nodeId: string, links: GraphEdge[]): Set<string> {
   const neighbors = new Set<string>();
-  
+
   for (const link of links) {
     const sourceId = getEdgeSourceId(link);
     const targetId = getEdgeTargetId(link);
-    
+
     if (sourceId === nodeId) {
       neighbors.add(targetId);
     } else if (targetId === nodeId) {
       neighbors.add(sourceId);
     }
   }
-  
+
   return neighbors;
 }
 
@@ -41,7 +41,7 @@ export function getSubgraph(
 ): { nodeIds: Set<string>; edgeIds: Set<string> } {
   const nodeIds = new Set<string>([centerNodeId]);
   const edgeIds = new Set<string>();
-  
+
   const visitQueue: string[] = [centerNodeId];
   const visited = new Set<string>();
 
@@ -52,10 +52,10 @@ export function getSubgraph(
   for (const link of graph.links) {
     const s = getEdgeSourceId(link);
     const t = getEdgeTargetId(link);
-    
+
     if (!outgoingMap.has(s)) outgoingMap.set(s, []);
     outgoingMap.get(s)!.push(link);
-    
+
     if (!incomingMap.has(t)) incomingMap.set(t, []);
     incomingMap.get(t)!.push(link);
   }
@@ -67,11 +67,11 @@ export function getSubgraph(
 
     // Get links to follow based on direction
     const linksToProcess: GraphEdge[] = [];
-    
+
     if (direction === 'dependencies' || direction === 'all') {
       linksToProcess.push(...(outgoingMap.get(curr) || []));
     }
-    
+
     if (direction === 'dependents' || direction === 'all') {
       linksToProcess.push(...(incomingMap.get(curr) || []));
     }
@@ -79,7 +79,7 @@ export function getSubgraph(
     for (const link of linksToProcess) {
       const s = getEdgeSourceId(link);
       const t = getEdgeTargetId(link);
-      
+
       nodeIds.add(s);
       nodeIds.add(t);
       edgeIds.add(link.id);
@@ -100,13 +100,13 @@ export function getSubgraph(
  */
 export function detectCycles(graph: GraphData): string[][] {
   const adjList = new Map<string, string[]>();
-  
+
   // Construct adjacency list (only following 'import' edges)
   for (const link of graph.links) {
     if (link.type !== 'import') continue;
     const s = getEdgeSourceId(link);
     const t = getEdgeTargetId(link);
-    
+
     if (!adjList.has(s)) adjList.set(s, []);
     adjList.get(s)!.push(t);
   }

@@ -1,5 +1,5 @@
-import type { RepoFile } from '../../repository/repositoryTypes';
-import type { GraphData, GraphNode, GraphEdge } from '../graphTypes';
+import type { RepoFile } from '../../repository/models/repositoryTypes';
+import type { GraphData, GraphNode, GraphEdge } from '../models/graphTypes';
 
 /**
  * Extracts parent directory path
@@ -171,7 +171,7 @@ export function buildDependencyGraph(
         const fileId = `file:${file.path}`;
         const dirId = `dir:${dir}`;
         const key = `${dirId}->${fileId}`;
-        
+
         if (!linkKeys.has(key)) {
           linkKeys.add(key);
           links.push({

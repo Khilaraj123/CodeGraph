@@ -1,6 +1,6 @@
 import { create } from 'zustand';
-import type { RepoFile, RepositoryMetadata, LoaderState } from './repositoryTypes';
-import type { GraphData } from '../graph/graphTypes';
+import type { RepoFile, RepositoryMetadata, LoaderState } from './models/repositoryTypes';
+import type { GraphData } from '../graph/models/graphTypes';
 import { loadGithubRepository } from './loaders/githubLoader';
 import { loadLocalFileList, loadLocalDirectory, loadZipFile } from './loaders/localLoader';
 import { parseCode } from '../analysis/parser/babelParser';

@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useRepoStore } from '../features/repository/repoStore';
-import { renderD3Graph } from '../features/visualization/d3Renderer';
-import { MermaidRenderer } from '../features/visualization/mermaidRenderer';
-import { exportToSvg, exportToPng, exportToJson } from '../features/visualization/export';
+import { renderD3Graph } from '../features/visualization/d3/d3Renderer';
+import { MermaidRenderer } from '../features/visualization/mermaid/mermaidRenderer';
+import { exportToSvg, exportToPng, exportToJson } from '../features/visualization/export/export';
 import {
   Folder,
   File,

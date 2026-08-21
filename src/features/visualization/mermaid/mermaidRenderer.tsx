@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import mermaid from 'mermaid';
-import type { GraphData } from '../graph/graphTypes';
-import { getEdgeSourceId, getEdgeTargetId, getSubgraph } from '../graph/graphUtils';
+import type { GraphData } from '../../graph/models/graphTypes';
+import { getEdgeSourceId, getEdgeTargetId, getSubgraph } from '../../graph/graphUtils';
 import { getNodeColor } from './d3Renderer';
 import { AlertCircle, Copy, Check } from 'lucide-react';
 
@@ -51,10 +51,10 @@ export function generateMermaidCode(graphData: GraphData, activeNodeId: string |
   nodes.forEach((n) => {
     // Replace colons/special symbols in IDs for Mermaid compliance
     const safeId = n.id.replace(/[^a-zA-Z0-9]/g, '_');
-    
+
     let leftBracket = '[';
     let rightBracket = ']';
-    
+
     if (n.type === 'directory') {
       leftBracket = '[/';
       rightBracket = '/]';
@@ -71,7 +71,7 @@ export function generateMermaidCode(graphData: GraphData, activeNodeId: string |
   links.forEach((l) => {
     const sId = getEdgeSourceId(l).replace(/[^a-zA-Z0-9]/g, '_');
     const tId = getEdgeTargetId(l).replace(/[^a-zA-Z0-9]/g, '_');
-    
+
     if (l.type === 'contains') {
       code += `  ${sId} -.-> ${tId}\n`; // Dashed line for folder contains
     } else {
@@ -98,13 +98,13 @@ export const MermaidRenderer: React.FC<MermaidRendererProps> = ({ graphData, act
   const containerRef = useRef<HTMLDivElement>(null);
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  
+
   const code = generateMermaidCode(graphData, activeNodeId);
   const isTruncated = graphData.nodes.length > 50;
 
   useEffect(() => {
     let active = true;
-    
+
     async function renderDiagram() {
       if (!containerRef.current) return;
       containerRef.current.innerHTML = '';
@@ -115,7 +115,7 @@ export const MermaidRenderer: React.FC<MermaidRendererProps> = ({ graphData, act
       try {
         const id = `mermaid-svg-${Date.now()}`;
         const { svg } = await mermaid.render(id, code);
-        
+
         if (active && containerRef.current) {
           containerRef.current.innerHTML = svg;
         }
@@ -183,9 +183,9 @@ export const MermaidRenderer: React.FC<MermaidRendererProps> = ({ graphData, act
         ) : graphData.nodes.length === 0 ? (
           <div className="text-slate-500 italic text-sm">No data available to render flowchart.</div>
         ) : (
-          <div 
-            ref={containerRef} 
-            className="w-full flex justify-center scale-95 origin-center [&>svg]:max-w-full [&>svg]:h-auto text-slate-100" 
+          <div
+            ref={containerRef}
+            className="w-full flex justify-center scale-95 origin-center [&>svg]:max-w-full [&>svg]:h-auto text-slate-100"
           />
         )}
       </div>

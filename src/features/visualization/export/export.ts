@@ -1,4 +1,4 @@
-import type { GraphData } from '../graph/graphTypes';
+import type { GraphData } from '../../graph/models/graphTypes';
 
 /**
  * Downloads serialized SVG text file

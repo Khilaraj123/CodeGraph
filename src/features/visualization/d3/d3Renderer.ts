@@ -1,12 +1,12 @@
 import * as d3 from 'd3';
-import type { GraphData, GraphNode, GraphEdge, NodeType } from '../graph/graphTypes';
-import { getEdgeSourceId, getEdgeTargetId } from '../graph/graphUtils';
+import type { GraphData, GraphNode, GraphEdge, NodeType } from '../../graph/models/graphTypes';
+import { getEdgeSourceId, getEdgeTargetId } from '../../graph/graphUtils';
 
 // Helper to determine color based on node type / file extension
 export function getNodeColor(type: NodeType, label: string): string {
   if (type === 'directory') return '#818cf8'; // Indigo
   if (type === 'package') return '#fb923c';   // Orange
-  
+
   const ext = label.split('.').pop()?.toLowerCase();
   switch (ext) {
     case 'tsx':
@@ -32,7 +32,7 @@ export function getNodeColor(type: NodeType, label: string): string {
 function getNodeIcon(type: NodeType, label: string): string {
   if (type === 'directory') return '📁';
   if (type === 'package') return '📦';
-  
+
   const ext = label.split('.').pop()?.toLowerCase();
   if (ext === 'tsx' || ext === 'jsx') return '⚛️';
   if (ext === 'css') return '🎨';
@@ -65,7 +65,7 @@ export function renderD3Graph(
 
   // Add filters for premium glow effects
   const defs = svg.append('defs');
-  
+
   // Marker arrow for links
   defs
     .append('marker')
@@ -220,7 +220,7 @@ export function renderD3Graph(
     .on('mouseover', (event, d) => {
       // Scale element slightly
       d3.select(event.currentTarget).select('.node-circle').attr('stroke-width', 4);
-      
+
       // Update opacity highlight if no active node is locked
       if (!activeNodeId) {
         const hoverNeighbors = new Set<string>([d.id]);
@@ -244,7 +244,7 @@ export function renderD3Graph(
       if (d.type === 'file') {
         sizeInfo = `<br/>Lines of code: <b>${Math.round(d.size)}</b>`;
       }
-      
+
       tooltip
         .style('opacity', 1)
         .html(`
@@ -353,7 +353,7 @@ export function renderD3Graph(
           // Straight lines for containment relationships
           return `M${sx},${sy}L${tx},${ty}`;
         }
-        
+
         // Curved paths for dependency arrows to avoid overlap in bilateral imports
         const dx = tx - sx;
         const dy = ty - sy;
